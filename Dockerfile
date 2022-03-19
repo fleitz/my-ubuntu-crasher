@@ -12,10 +12,21 @@ ENV OUT_DIR=$PROJECT_DIR/out
 ENV MODULE_NAME=myUbuntuCrasher.out
 ENV BUGSPLAT_DATABASE=fred
 ENV BUGSPLAT_APP_NAME=myUbuntuCrasher
-ENV BUGSPLAT_APP_VERSION=1.0.0
+ENV BUGSPLAT_APP_VERSION=2.3.1
+
+RUN apt install -y strace
 
 RUN mkdir -p $HOME/Desktop/github/my-ubuntu-crasher
 COPY . $HOME/Desktop/github/my-ubuntu-crasher
+COPY ./entrypoint.sh /entrypoint.sh
+WORKDIR $HOME/Desktop/github/my-ubuntu-crasher
+RUN sed -i "s/__BUGSPLAT_DATABASE__/${BUGSPLAT_DATABASE}/g" vars.h
+RUN sed -i "s/__BUGSPLAT_APP_NAME__/${BUGSPLAT_APP_NAME}/g" vars.h
+RUN sed -i "s/__BUGSPLAT_APP_VERSION__/${BUGSPLAT_APP_VERSION}/g" vars.h
+RUN cat vars.h; sleep 2
 WORKDIR $HOME/Desktop/github/my-ubuntu-crasher/scripts
 RUN ./build.sh
-CMD ${OUT_DIR}/${MODULE_NAME}
+RUN chmod 755 /entrypoint.sh
+# Uncomment to debug with strace
+ENV DEBUG=1
+CMD /entrypoint.sh

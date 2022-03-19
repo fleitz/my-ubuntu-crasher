@@ -4,7 +4,7 @@
 #include "client/crashpad_client.h"
 #include "client/crash_report_database.h"
 #include "client/settings.h"
-
+#include "vars.h"
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 using namespace base;
@@ -16,7 +16,7 @@ string getExecutableDir(void);
 void crash(void);
 
 int main(int argc, char **argv) {
-	initializeCrashpad("fred", "myUbuntuCrasher", "1.0.0");
+	initializeCrashpad(BUGSPLAT_DATABASE, BUGSPLAT_APP_NAME, BUGSPLAT_APP_VERSION);
 	crash();
 }
 
